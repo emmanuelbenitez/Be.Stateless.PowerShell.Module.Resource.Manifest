@@ -33,6 +33,10 @@ function New-Binding {
         $EnvironmentSettingOverridesRootPath = $null,
 
         [Parameter(Mandatory = $false)]
+        [string]
+        $ApplicationSettingsOverrideType = $null,
+
+        [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
         [string[]]
         $AssemblyProbingPaths = @(),
@@ -53,8 +57,10 @@ function New-Binding {
         Path                                = $Path | Resolve-Path | Select-Object -ExpandProperty ProviderPath
         Condition                           = $Condition
         EnvironmentSettingOverridesRootPath = $EnvironmentSettingOverridesRootPath
+        ApplicationSettingsOverrideType     = $ApplicationSettingsOverrideType
         AssemblyProbingPaths                = $AssemblyProbingPaths
     }
+
     New-Item @arguments -PassThru:$PassThru
 }
 

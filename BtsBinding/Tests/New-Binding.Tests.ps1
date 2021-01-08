@@ -37,7 +37,7 @@ Describe 'New-Binding' {
                 '' > TestDrive:\two.txt
             }
             It 'Returns a custom object with both a path and a name property.' {
-                $expectedItem = [PSCustomObject]@{ Name = 'one.txt' ; EnvironmentSettingOverridesRootPath = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\one.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
+                $expectedItem = [PSCustomObject]@{ Name = 'one.txt' ; EnvironmentSettingOverridesRootPath = ''; ApplicationSettingsOverrideType = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\one.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
 
                 $actualItem = New-Binding -Path TestDrive:\one.txt -PassThru
 
@@ -48,17 +48,18 @@ Describe 'New-Binding' {
                     Name                                = 'one.txt'
                     Path                                = 'TestDrive:\one.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath
                     EnvironmentSettingOverridesRootPath = 'c:\folder'
+                    ApplicationSettingsOverrideType     = 'Type'
                     AssemblyProbingPaths                = 'c:\folder1', 'c:\folder2'
                 }
 
-                $actualItem = New-Binding -Path TestDrive:\one.txt -EnvironmentSettingOverridesRootPath c:\folder -AssemblyProbingPaths c:\folder1, c:\folder2 -PassThru
+                $actualItem = New-Binding -Path TestDrive:\one.txt -EnvironmentSettingOverridesRootPath c:\folder -ApplicationSettingsOverrideType Type -AssemblyProbingPaths c:\folder1, c:\folder2 -PassThru
 
                 Compare-Item -ReferenceItem $expectedItem -DifferenceItem $actualItem | Should -BeNullOrEmpty
             }
             It 'Returns a collection of custom objects with both a path and a name property.' {
                 $expectedItems = @(
-                    [PSCustomObject]@{ Name = 'one.txt' ; EnvironmentSettingOverridesRootPath = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\one.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
-                    [PSCustomObject]@{ Name = 'two.txt' ; EnvironmentSettingOverridesRootPath = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\two.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
+                    [PSCustomObject]@{ Name = 'one.txt' ; EnvironmentSettingOverridesRootPath = '' ; ApplicationSettingsOverrideType = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\one.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
+                    [PSCustomObject]@{ Name = 'two.txt' ; EnvironmentSettingOverridesRootPath = '' ; ApplicationSettingsOverrideType = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\two.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
                 )
 
                 $actualItems = New-Binding -Path (Get-ChildItem -Path TestDrive:\) -PassThru
@@ -77,9 +78,9 @@ Describe 'New-Binding' {
             }
             It 'Accumulates Bindings into the Manifest being built.' {
                 $expectedItems = @(
-                    [PSCustomObject]@{ Name = 'one.txt' ; EnvironmentSettingOverridesRootPath = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\one.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
-                    [PSCustomObject]@{ Name = 'six.txt' ; EnvironmentSettingOverridesRootPath = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\six.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
-                    [PSCustomObject]@{ Name = 'two.txt' ; EnvironmentSettingOverridesRootPath = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\two.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
+                    [PSCustomObject]@{ Name = 'one.txt' ; EnvironmentSettingOverridesRootPath = '' ; ApplicationSettingsOverrideType = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\one.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
+                    [PSCustomObject]@{ Name = 'six.txt' ; EnvironmentSettingOverridesRootPath = '' ; ApplicationSettingsOverrideType = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\six.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
+                    [PSCustomObject]@{ Name = 'two.txt' ; EnvironmentSettingOverridesRootPath = '' ; ApplicationSettingsOverrideType = '' ; AssemblyProbingPaths = @() ; Path = 'TestDrive:\two.txt' | Resolve-Path | Select-Object -ExpandProperty ProviderPath }
                 )
 
                 $builtManifest = New-Manifest -Type Application -Name 'BizTalk.Factory' -Build {
